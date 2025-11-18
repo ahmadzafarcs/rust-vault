@@ -1,22 +1,38 @@
-rust-vault
+# rust-vault
 
-A simple and secure CLI password manager written in Rust. Store, retrieve, and manage your passwords locally using JSON-based persistence.
+A simple and secure CLI password manager written in Rust. rust-vault allows you to store, retrieve, and manage your passwords locally using JSON-based persistence. It’s a beginner-friendly Rust project ideal for learning CLI development, structs, enums, and file I/O.
+
+## Table of Contents
 
 Features
 
-Add a new password entry (service, username, password)
-
-List all saved entries
-
-Retrieve the password for a specific service
-
-Delete an entry
-
-Persistent storage in a local JSON file
-
-Beginner-friendly Rust CLI project
-
 Installation
+
+Usage
+
+Project Structure
+
+Learning Goals
+
+Future Improvements
+
+License
+
+Features
+
+Add a new password entry with service, username, and password.
+
+List all saved entries.
+
+Retrieve the password for a specific service.
+
+Delete an entry from the vault.
+
+Persistent storage in a local JSON file.
+
+Beginner-friendly CLI application written in Rust.
+
+## Installation
 
 Clone the repository:
 
@@ -24,13 +40,13 @@ git clone git@github.com:yourusername/rust-vault.git
 cd rust-vault
 
 
-Build the project with Cargo:
+Build the project using Cargo:
 
 cargo build --release
 
 Usage
 
-Run commands using Cargo:
+Run commands via Cargo. Examples:
 
 # Add a new entry
 cargo run -- add <service> <username> <password>
@@ -45,35 +61,47 @@ cargo run -- get <service>
 cargo run -- delete <service>
 
 
-Example:
+Example workflow:
 
 cargo run -- add gmail ahmad123 mypass123
 cargo run -- list
 cargo run -- get gmail
 cargo run -- delete gmail
 
-Project Structure
+## Project Structure
+rust-vault/
+ ├── Cargo.toml        # Project configuration and dependencies
+ ├── README.md         # Project description and usage
+ └── src/
+      ├── main.rs      # CLI entry point, argument parsing
+      ├── model.rs     # Defines Entry and Vault structs
+      ├── storage.rs   # Handles reading/writing vault to JSON
+      └── commands.rs  # Implements CLI commands: add, list, get, delete
 
-main.rs – CLI entry point
+## Learning Goals
 
-model.rs – Defines Entry and Vault structs
+Practice Rust syntax: structs, enums, Result, Option.
 
-storage.rs – Handles reading/writing vault to JSON
+Work with file I/O and JSON serialization (serde).
 
-commands.rs – Implements add, list, get, delete commands
+Build a functional CLI application.
 
-Learning Goals
+Understand modular project structure in Rust.
 
-Practice Rust syntax: structs, enums, Result, Option
+Future Improvements
 
-Work with file I/O and JSON serialization (serde)
+Add encryption for secure password storage.
 
-Build a functional CLI
+Interactive CLI input (prompt for password instead of passing in command).
 
-Understand modular project structure in Rust
+Search or filter entries by service name.
+
+Export/import vault for backup purposes.
+
+Improved error handling and user experience.
 
 License
 
 MIT License © Ahmad
 
-If you want, I can also add a small “Future Improvements” section to make it look more professional and show planning skills in the README. Do you want me to do that?
+If you want, I can also make an even shorter, recruiter-friendly version that highlights skills and project features in one page for your GitHub portfolio. Do you want me to do that?

@@ -18,7 +18,7 @@ Future Improvements
 
 License
 
-Features
+## Features
 
 Add a new password entry with service, username, and password.
 
@@ -48,16 +48,16 @@ Usage
 
 Run commands via Cargo. Examples:
 
-# Add a new entry
+## Add a new entry
 cargo run -- add <service> <username> <password>
 
-# List all entries
+## List all entries
 cargo run -- list
 
-# Get password for a service
+## Get password for a service
 cargo run -- get <service>
 
-# Delete an entry
+## Delete an entry
 cargo run -- delete <service>
 
 
@@ -67,16 +67,6 @@ cargo run -- add gmail ahmad123 mypass123
 cargo run -- list
 cargo run -- get gmail
 cargo run -- delete gmail
-
-## Project Structure
-rust-vault/
- ├── Cargo.toml        # Project configuration and dependencies
- ├── README.md         # Project description and usage
- └── src/
-      ├── main.rs      # CLI entry point, argument parsing
-      ├── model.rs     # Defines Entry and Vault structs
-      ├── storage.rs   # Handles reading/writing vault to JSON
-      └── commands.rs  # Implements CLI commands: add, list, get, delete
 
 ## Learning Goals
 

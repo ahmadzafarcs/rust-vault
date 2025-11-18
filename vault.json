@@ -1,0 +1,9 @@
+{
+  "entries": [
+    {
+      "service": "github",
+      "username": "devuser",
+      "password": "secret"
+    }
+  ]
+}

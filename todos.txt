@@ -1,0 +1,13 @@
+## Learning next:
+Memory Security: When your app decrypts a password to show it, the password exists in the RAM (Heap). When the user closes the app, does that memory get "zeroed out"? Or is it left there for a hacker to dump later?
+
+Deep Dive: Look into the Zeroize trait in Rust.
+
+File I/O & Buffers: How does the app read the database? Does it load the whole file into RAM (bad for large files) or read it in chunks (buffers)?
+
+Deep Dive: Compare std::fs::read_to_string vs BufReader.
+
+Serialization: How is the data saved? JSON? Binary?
+
+Deep Dive: Try changing the storage format. If it uses JSON, try converting it to a binary format (like Bincode) to see how it affects file size and speed.
+(~Gemini)

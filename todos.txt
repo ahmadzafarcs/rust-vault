@@ -10,4 +10,89 @@ Deep Dive: Compare std::fs::read_to_string vs BufReader.
 Serialization: How is the data saved? JSON? Binary?
 
 Deep Dive: Try changing the storage format. If it uses JSON, try converting it to a binary format (like Bincode) to see how it affects file size and speed.
+
+This is the best way to learn Rust. You are currently looking at "High Level" Rust (using libraries like serde_json), but your questions in todos.txt show you are ready to look at "Systems Level" Rust.
+
+Based on the code you uploaded, here are 4 Systems Concepts you can learn directly from this codebase, moving from "Junior Implementation" to "Systems Engineer Implementation."
+
+1. Concept: Error Propagation vs. Process Crashing
+The Current Code: In src/storage.rs, you use .unwrap() and .expect() everywhere.
+
+let data = fs::read_to_string(path).unwrap();
+
+The Systems Problem: In a real distributed system, if a file is missing or corrupted, the worker node shouldn't "panic" (crash and exit). It should report the error up the stack so the system can decide what to do (retry? log it? alert admin?). unwrap() is a "panic" button.
+
+The "Deep Rust" Upgrade:
+
+Concept: Result<T, E> and the ? operator.
+
+The Task: Refactor load_vault to return Result<Vault, io::Error>.
+
+The "Hard" Part: You will have to handle the error in main.rs. This forces you to think about recoverable vs. unrecoverable errors.
+
+2. Concept: Interfaces & Decoupling (Traits)
+The Current Code: Your commands.rs is tightly coupled to storage::load_vault. If you wanted to switch from a JSON file to a PostgreSQL database (like a real backend), you would have to rewrite commands.rs.
+
+The Systems Problem: Big systems are built on Interfaces, not implementations. You want to be able to swap the storage engine without touching the business logic.
+
+The "Deep Rust" Upgrade:
+
+Concept: Traits (Rust's version of Interfaces).
+
+The Task: Define a trait called StorageBackend.
+
+Rust
+
+pub trait StorageBackend {
+    fn save(&self, vault: &Vault) -> Result<(), io::Error>;
+    fn load(&self) -> Result<Vault, io::Error>;
+}
+Then implement JsonStorage for that trait. Update commands.rs to accept Box<dyn StorageBackend> (Dynamic Dispatch) or use Generics (Static Dispatch).
+
+3. Concept: Memory Layout & Security (The "Zeroize" Todo)
+The Current Code: In model.rs, your Entry struct uses String for the password.
+
+pub password: String,
+
+The Systems Problem: As you noted in todos.txt, when String is dropped, the memory is marked as "free," but the bytes (your password) stay in RAM until overwritten by something else. A hacker with a memory dump can read it.
+
+The "Deep Rust" Upgrade:
+
+Concept: Destructors (Drop trait) and Volatile Memory.
+
+The Task: You cannot just "zero out" a standard String easily because Rust's allocator manages it.
+
+Intermediate: Use the secrecy crate which wraps types in Secret<String> and automatically zeroes memory on Drop.
+
+Advanced (Systems Mode): Implement a custom struct SecureString that implements the Drop trait. Inside drop(), use std::ptr::write_volatile to overwrite the memory with 0s before it is deallocated.
+
+4. Concept: Buffering vs. Loading (The "I/O" Todo)
+The Current Code: You asked in todos.txt about read_to_string vs BufReader. Currently, storage.rs uses fs::read_to_string(path).
+
+The Systems Problem: read_to_string asks the OS to copy the entire file from Disk to RAM in one go. If vault.json is 4GB (huge, but possible in logs), your program crashes with Out of Memory (OOM).
+
+The "Deep Rust" Upgrade:
+
+Concept: Buffered Streams.
+
+The Task: Switch to BufReader.
+
+Rust
+
+use std::io::BufReader;
+use std::fs::File;
+
+let file = File::open(path)?;
+let reader = BufReader::new(file);
+let vault: Vault = serde_json::from_reader(reader)?;
+Why it's better: BufReader reads small chunks (usually 8KB) from the disk at a time, processes them, and then drops them. It keeps memory usage low and constant, regardless of file size.
+
+Summary Checklist for You
+Refactor: Remove all unwrap() calls.
+
+Refactor: Use BufReader instead of read_to_string.
+
+Feature: Implement Drop for a Password struct to zero out memory.
+
+Feature: Encrypt the file. serde_json writes plain text. Use the aes-gcm crate to encrypt the bytes before writing them to the file. This teaches you about byte manipulation (Vec<u8>) vs String manipulation.
 (~Gemini)
